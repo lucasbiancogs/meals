@@ -4,24 +4,38 @@ import '../components/main_drawer.dart';
 import '../models/settings.dart';
 
 class SettingsScreen extends StatefulWidget {
+  final Function(Settings) onSettingsChange;
+  final Settings settings;
+
+  SettingsScreen(this.onSettingsChange, this.settings);
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  Settings settings = Settings();
+  Settings _settings;
+
+  @override
+  void initState() {
+    super.initState();
+    _settings = widget.settings;
+  }
 
   Widget _createSwitch(
     String title,
     String subtitle,
     bool value,
-    Function onChanged,
+    void Function(bool) onChanged,
   ) {
     return SwitchListTile.adaptive(
       title: Text(title),
       subtitle: Text(subtitle),
       value: value,
-      onChanged: onChanged,
+      onChanged: (value) {
+        onChanged(value);
+        widget.onSettingsChange(_settings);
+      },
     );
   }
 
@@ -48,33 +62,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _createSwitch(
                   'Sem Glúten',
                   'Só exibe refeições sem glúten.',
-                  settings.isGlutenFree,
+                  _settings.isGlutenFree,
                   (value) => setState(() {
-                    settings.isGlutenFree = value;
+                    _settings.isGlutenFree = value;
                   }),
                 ),
                 _createSwitch(
                   'Sem Lactose',
                   'Só exibe refeições sem lactose.',
-                  settings.isLactoseFree,
+                  _settings.isLactoseFree,
                   (value) => setState(() {
-                    settings.isLactoseFree = value;
+                    _settings.isLactoseFree = value;
                   }),
                 ),
                 _createSwitch(
                   'Vegana',
                   'Só exibe refeições veganas.',
-                  settings.isVegan,
+                  _settings.isVegan,
                   (value) => setState(() {
-                    settings.isVegan = value;
+                    _settings.isVegan = value;
                   }),
                 ),
                 _createSwitch(
                   'Vegetariana',
                   'Só exibe refeições vegetarianas.',
-                  settings.isVegetarian,
+                  _settings.isVegetarian,
                   (value) => setState(() {
-                    settings.isVegetarian = value;
+                    _settings.isVegetarian = value;
                   }),
                 ),
               ],
