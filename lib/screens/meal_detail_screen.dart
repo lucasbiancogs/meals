@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/category.dart';
 import '../models/meal.dart';
 
 class MealDetailScreen extends StatelessWidget {
@@ -29,56 +30,66 @@ class MealDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final meal = ModalRoute.of(context).settings.arguments as Meal;
+    final arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    final meal = arguments['meal'] as Meal;
+    final category = arguments['category'] as Category;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(meal.title),
-          backgroundColor: Colors.blueGrey,
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Image.network(
-                  meal.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+      appBar: AppBar(
+        title: Text(meal.title),
+        backgroundColor: category.color,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 300,
+              width: double.infinity,
+              child: Image.network(
+                meal.imageUrl,
+                fit: BoxFit.cover,
               ),
-              _createSectionTitle(context, 'Ingredientes'),
-              _createSectionContainer(
-                ListView.builder(
-                  itemCount: meal.ingredients.length,
-                  itemBuilder: (ctx, index) {
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 10,
-                        ),
-                        child: Text(meal.ingredients[index]),
-                      ),
-                      color: Theme.of(context).accentColor,
-                    );
-                  },
-                ),
-              ),
-              _createSectionTitle(context, 'Passos'),
-              _createSectionContainer(ListView.builder(
-                itemCount: meal.steps.length,
+            ),
+            _createSectionTitle(context, 'Ingredientes'),
+            _createSectionContainer(
+              ListView.builder(
+                itemCount: meal.ingredients.length,
                 itemBuilder: (ctx, index) {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      child: Text('${index + 1}'),
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10,
+                      ),
+                      child: Text(meal.ingredients[index]),
                     ),
-                    title: Text(meal.steps[index]),
+                    color: Theme.of(context).accentColor,
                   );
                 },
-              ))
-            ],
-          ),
-        ));
+              ),
+            ),
+            _createSectionTitle(context, 'Passos'),
+            _createSectionContainer(ListView.builder(
+              itemCount: meal.steps.length,
+              itemBuilder: (ctx, index) {
+                return ListTile(
+                  leading: CircleAvatar(
+                    child: Text('${index + 1}'),
+                  ),
+                  title: Text(meal.steps[index]),
+                );
+              },
+            ))
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.star),
+        onPressed: () {
+          Navigator.of(context).pop(meal.title);
+        },
+      ),
+    );
   }
 }

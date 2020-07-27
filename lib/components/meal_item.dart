@@ -1,17 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:meals/models/category.dart';
 import 'package:meals/utils/app_routes.dart';
 import '../models/meal.dart';
 
 class MealItem extends StatelessWidget {
   final Meal meal;
+  final Category category;
 
-  const MealItem(this.meal);
+  const MealItem(this.meal, this.category);
 
   void _selectMeal(BuildContext context) {
     Navigator.of(context).pushNamed(
       AppRoutes.MEAL_DETAIL,
-      arguments: meal
-    );
+      arguments: {
+        'meal': meal,
+        'category': category,
+      },
+    ).then((result) {
+      /*
+      O .then funciona de forma assíncrona e aqui permite que
+      depois que a tela for fechada seja possível receber as ações realizadas
+      na tela que estava aberta...
+
+      em meal_detail_screen.dart quem vai passar as ações é o
+      Navigator.of(context).pop(<propriedades>)
+      */
+      if (result == null) {
+        print('Sem resultado');
+      } else {
+        print(result);
+      }
+    });
   }
 
   @override
